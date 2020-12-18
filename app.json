@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "GarbManager",
+    "description": "Enable farmers to request Airos drone",
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.mitece.garbmanager"
+    },
+    "slug": "airosfarm"
+  }
+}
