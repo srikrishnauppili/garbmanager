@@ -1,6 +1,6 @@
 /* UI by Sri Krishna.U */
 import React, { useState,useEffect }  from "react";
-import { StyleSheet,Button, View, Text,TextInput,Image,TouchableOpacity} from "react-native";
+import {Alert, AppRegistry, StyleSheet,Button, View, Text,TextInput,Image,TouchableOpacity} from "react-native";
 import MapView from 'react-native-maps';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,9 +8,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import logo from './assets/logo.png'; 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
- 
-
-
 
 export default function App() {
   const [location, setLocation] = useState(null);
@@ -23,6 +20,103 @@ export default function App() {
     latitudeDelta: 0.1,
     longitudeDelta: 0.1
   });
+  const [userName, setuserName] = useState(null);
+  const [userPassword, setuserPassword] = useState(null);
+  const [userEmail, setuserEmail] = useState(null);
+  const [userAddress, setuserAddress] = useState(null);
+  const [userMobno, setuserMobno] = useState(null);
+  const [loginuserName, setLoginuserName] = useState(null);
+  const [loginPassword, setLoginPassword] = useState(null);
+  const [loginState, setLoginState] = useState(null);
+  userRegister = (navigation) =>{
+		//alert('ok'); // version 0.48
+		
+		
+		
+		
+		fetch('https://garbmanager.000webhostapp.com/register_user.php?username='+userName+'&& email='+userEmail+'&& password='+userPassword+'&& address='+userAddress+'&& mobile_number='+userMobno, {
+			method: 'get',
+			header:{
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+		
+			
+		})
+		.then((response) => response.json())
+			.then((responseJson) =>{
+        console.log(responseJson);
+        if(responseJson=="true"){navigation.push('login');}
+			})
+			.catch((error)=>{
+				console.error(error);
+			});
+		
+	}
+  userLogin= (navigation) =>{
+		//alert('ok'); // version 0.48
+		fetch('https://garbmanager.000webhostapp.com/login_user.php?email='+loginuserName+'&&password='+loginPassword, {
+			method: 'get',
+			header:{
+				'Accept': 'application/json',
+				'Content-type': 'application/json'
+			},
+			
+			
+		}) 
+		.then((response) => response.json())
+			.then((responseJson) =>{
+        console.log(responseJson);
+        
+        if(responseJson=="true"){navigation.push('Welcome');}
+        else if(responseJson=="false"){
+         navigation.push('Login');}
+			})
+			.catch((error)=>{
+				console.error(error);
+			});
+    }
+    userLocation= () =>{
+      //alert('ok'); // version 0.48
+      fetch('https://garbmanager.000webhostapp.com/add_location.php', {
+        method: 'post',
+        header:{
+          'Accept': 'application/json',
+          'Content-type': 'application/json'
+        },
+        body:JSON.stringify({
+          location_lat: location.latitude,
+          location_lon: location.longitude,
+          email:loginuserName
+        })
+        
+      })
+      .then((response) => response.json())
+        .then((responseJson) =>{
+          console.log(responseJson);
+        })
+        .catch((error)=>{
+          console.error(error);
+        });
+      }
+      getGarbageLocation= () =>{
+        //alert('ok'); // version 0.48
+        fetch('https://garbmanager.000webhostapp.com/garbage_locations.php', {
+          method: 'get',
+          header:{
+            'Accept': 'application/json',
+            'Content-type': 'application/json'
+          }
+          
+        })
+        .then((response) => response.json())
+          .then((responseJson) =>{
+            console.log(responseJson);
+          })
+          .catch((error)=>{
+            console.error(error);
+          });
+        }
   function InitialScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -53,18 +147,21 @@ export default function App() {
           <Image source={logo} style={{ width: 305, height: 300 }} /> 
   
         <TextInput
-        
+        value={loginuserName}
+        onChangeText={text =>setLoginuserName(text)}
         placeholder={'UserName'}
         style={styles.input}
       />
        <TextInput
-        
+        value={loginPassword}
         placeholder={'Password'}
+        secureTextEntry={true}
+        onChangeText={text => setLoginPassword(text)}
         style={styles.input}
       />
         <Button
           title="Login"
-          onPress={() => navigation.push('Welcome')}
+          onPress={() => {userLogin(navigation);}}
         />
       </View>
     );
@@ -75,27 +172,42 @@ export default function App() {
           <Image source={logo} style={{ width: 305, height: 300 }} /> 
         <TextInput
         placeholder={'UserName'}
+        value={userName}
+        onChangeText={text => setuserName(text)}
         style={styles.input}
        
       />
       <TextInput
       placeholder={'Password'}
+      value={userPassword}
+      onChangeText={text => setuserPassword(text)}
       style={styles.input}
-        
+      secureTextEntry={true}
       />
        <TextInput
        placeholder={'Address'}
+       value={userAddress}
+       onChangeText={text => setuserAddress(text)}
        style={styles.input}
        
       />
        <TextInput
        placeholder={'Mobile No.'}
+       value={userMobno}
+       onChangeText={text => setuserMobno(text)}
+       style={styles.input}
+      /> 
+         <TextInput
+       value={userEmail}
+       placeholder={'Email'}
+       keyboardType = 'email-address'
+       onChangeText={text => setuserEmail(text)}
        style={styles.input}
         
       />
         <Button
           title="Sign Up"
-          onPress={() => navigation.push('Login')}
+          onPress={() => {userRegister(navigation);}}
         />
       </View>
     );
@@ -190,8 +302,8 @@ export default function App() {
   <Button
           
           color="#90A4AE"
-          title="Recipt"
-          onPress={() => navigation.push('Confirmation')}
+          title="Confirm"
+          onPress={() =>{userLocation();navigation.push('Welcome');}}
         />
         </View>
   
@@ -227,6 +339,39 @@ export default function App() {
       </View>
     );
   }
+
+  function AdminScreen({ navigation }) {
+    console.log(location);
+    getGarbageLocation();
+    let newreg={
+      latitude: location.latitude, 
+      longitude: location.longitude,
+      latitudeDelta: 0.1,
+      longitudeDelta: 0.1
+    };
+   
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={styles.titleText}>
+          GarbManager- Admin
+          {"\n"}
+        </Text>
+
+     
+      <MapView style={{
+        width: "100%",
+        height: "85%",
+      }} region={newreg}>
+            <MapView.Marker coordinate={location} />
+      
+      </MapView>
+  
+  
+       
+      </View>
+    );
+  }
+
   
 const Stack = createStackNavigator();
 getLocationAsync = async () => {
