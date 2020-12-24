@@ -1,6 +1,6 @@
 /* UI by Sri Krishna.U */
 import React, { useState, useEffect } from "react";
-import { Alert, AppRegistry, StyleSheet, Button, View, Text, TextInput, Image, TouchableOpacity } from "react-native";
+import { Alert, AppRegistry, StyleSheet, Button, View, Text, TextInput, Image, TouchableOpacity, ScrollView } from "react-native";
 import MapView from 'react-native-maps';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -164,46 +164,15 @@ export default function App() {
             longitude: parseFloat(latlong[1])
           },
         }
-        state.vehiclemarker = vehiclemarker;
+
         setVehicleMarker(vehiclemarker);
-        console.log(state.vehiclemarker);
+        console.log(vehicleMarker);
       })
       .catch((error) => {
         console.error(error);
       });
   }
-  getVehicleLocation = () => {
-    //alert('ok'); // version 0.48
 
-
-    fetch('https://garbmanager.000webhostapp.com/vehicle_locations.php', {
-      method: 'get',
-      header: {
-        'Accept': 'application/json',
-        'Content-type': 'application/json'
-      }
-
-    })
-      .then((response) => response.text())
-      .then((responseJson) => {
-
-
-        let latlong = responseJson.split(',');
-        let vehiclemarker = {
-          title: 'vehicle',
-          coordinates: {
-            latitude: parseFloat(latlong[0]),
-            longitude: parseFloat(latlong[1])
-          },
-        }
-        state.vehiclemarker = vehiclemarker;
-        setVehicleMarker(vehiclemarker);
-        console.log(state.vehiclemarker);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
   function InitialScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -231,71 +200,75 @@ export default function App() {
   function LoginScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Image source={logo} style={{ width: 305, height: 300 }} />
+        <ScrollView style={{ flex: 1 }}>
+          <Image source={logo} style={{ width: 305, height: 300 }} />
 
-        <TextInput
+          <TextInput
 
-          onChangeText={text => state.loginuserName = text}
-          placeholder={'UserName'}
-          style={styles.input}
-        />
-        <TextInput
+            onChangeText={text => state.loginuserName = text}
+            placeholder={'UserName'}
+            style={styles.input}
+          />
+          <TextInput
 
-          placeholder={'Password'}
-          secureTextEntry={true}
-          onChangeText={text => state.loginPassword = text}
-          style={styles.input}
-        />
-        <Button
-          title="Login"
-          onPress={() => { userLogin(navigation); }}
-        />
+            placeholder={'Password'}
+            secureTextEntry={true}
+            onChangeText={text => state.loginPassword = text}
+            style={styles.input}
+          />
+          <Button
+            title="Login"
+            onPress={() => { userLogin(navigation); }}
+          />
+        </ScrollView>
       </View>
     );
   }
   function SignupScreen({ navigation }) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Image source={logo} style={{ width: 305, height: 300 }} />
-        <TextInput
-          placeholder={'UserName'}
+        <ScrollView>
+          <Image source={logo} style={{ width: 305, height: 300 }} />
+          <TextInput
+            placeholder={'UserName'}
 
-          onChangeText={text => state.userName = text}
-          style={styles.input}
+            onChangeText={text => state.userName = text}
+            style={styles.input}
 
-        />
-        <TextInput
-          placeholder={'Password'}
+          />
+          <TextInput
+            placeholder={'Password'}
 
-          onChangeText={text => state.userPassword = text}
-          style={styles.input}
-          secureTextEntry={true}
-        />
-        <TextInput
-          placeholder={'Address'}
+            onChangeText={text => state.userPassword = text}
+            style={styles.input}
+            secureTextEntry={true}
+          />
+          <TextInput
+            placeholder={'Address'}
 
-          onChangeText={text => state.userAddress = text}
-          style={styles.input}
+            onChangeText={text => state.userAddress = text}
+            style={styles.input}
 
-        />
-        <TextInput
-          placeholder={'Mobile No.'}
+          />
+          <TextInput
+            placeholder={'Mobile No.'}
 
-          onChangeText={text => state.userMobno = text}
-          style={styles.input}
-        />
-        <TextInput
+            onChangeText={text => state.userMobno = text}
+            style={styles.input}
+          />
+          <TextInput
 
-          placeholder={'Email'}
-          keyboardType='email-address'
-          onChangeText={text => state.userEmail = text}
-          style={styles.input}
+            placeholder={'Email'}
+            keyboardType='email-address'
+            onChangeText={text => state.userEmail = text}
+            style={styles.input}
 
-        />
-        <Button
-          title="Sign Up"
-          onPress={() => { userRegister(navigation); }}
-        />
+          />
+          <Button
+            title="Sign Up"
+            onPress={() => { userRegister(navigation); }}
+          />
+        </ScrollView>
       </View>
     );
   }
@@ -433,13 +406,13 @@ export default function App() {
       newreg = {
         latitude: vehicleMarker.coordinates.latitude,
         longitude: vehicleMarker.coordinates.longitude,
-        latitudeDelta: 0.2,
-        longitudeDelta: 0.2
+        latitudeDelta: 0.1,
+        longitudeDelta: 0.1
       };
     }
     else {
       newreg = {
-        latitude: 13,
+        latitude: 22,
         longitude: 80,
         latitudeDelta: 0.1,
         longitudeDelta: 0.1
@@ -466,7 +439,7 @@ export default function App() {
               title={marker.title}
             />
           ))}
-          {state.vehiclemarker ?
+          {vehicleMarker ?
             (<MapView.Marker
               coordinate={vehicleMarker.coordinates}
               title={vehicleMarker.title}

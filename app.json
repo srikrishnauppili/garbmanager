@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "GarbManager",
-    "description": "Enable farmers to request Airos drone",
+    "description": "Enable People to complain on garbage collection",
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "package": "com.mitece.garbmanager"
     },
-    "slug": "airosfarm"
+    "slug": "garbmanager"
   }
 }
