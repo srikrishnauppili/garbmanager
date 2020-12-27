@@ -402,6 +402,13 @@ export default function App() {
 
   function AdminScreen({ navigation }) {
     let newreg = null;
+    useEffect(() => {
+      const interval = setInterval(() => getVehicleLocation(), 8000);
+      return () => {
+        clearInterval(interval);
+      };
+    }, []);
+    
     if (vehicleMarker) {
       newreg = {
         latitude: vehicleMarker.coordinates.latitude,
